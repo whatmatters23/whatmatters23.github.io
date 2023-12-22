@@ -16,9 +16,25 @@ If you find our work useful, please cite:
 
 Follow this website [Test locally](https://kbroman.org/simple_site/pages/local_test.html)
 
-1. Install github-pages gem
+(0. Optional to install ruby)
+```bash
+sudo apt-get install ruby-full
+```
+
+1. Install github-pages gem (sometimes need to add `sudo` to have persmission to install)
 ```bash
 gem install github-pages
+```
+
+2. Install jekyll (following this page https://jekyllrb.com/docs/installation/ubuntu/)
+
+```bash
+echo '# Install Ruby Gems to ~/gems' >> ~/.bashrc
+echo 'export GEM_HOME="$HOME/gems"' >> ~/.bashrc
+echo 'export PATH="$HOME/gems/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+
+gem install jekyll bundler
 ```
 
 2. Build jekyl

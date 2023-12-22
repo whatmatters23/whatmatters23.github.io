@@ -49,7 +49,6 @@
   </div>
 </nav>
 
-
 <section class="hero">
   <div class="hero-body">
     <div class="container is-max-desktop">
@@ -180,7 +179,7 @@
 
       <div class="column">
         <div class="content">
-          <h2 class="title is-2">TL;DR</h2>
+          <h3 class="title is-3">TL;DR</h3>
           <p>We emprically prove that motion prediction does not correlate to driving performance.
             It is due to 2 factors: the dynamics gap and the computational efficiency.
           </p>
@@ -188,94 +187,80 @@
       </div>
     </div>
 
-    <!--
     <div class="columns is-centered">
-      <div class="column is-full-width">
-        <h2 class="title is-3">Animation</h2>
+      <div class="column">
+        <div class="content">
+          <h3 class="title is-3">Experiment Setup</h3>
+          <h4 class="title is-4">Motion Predictions</h4>
+          <p>We use 10 motion predictors, encompassing both model-based and data-driven approaches. The following table shows 10 methods 
+          (please refer to the paper for citation):</p>
+          <img id="moped" height="100%" src="./static/images/moped.png">
 
-        <h3 class="title is-4">Interpolating states</h3>
-        <div class="content has-text-justified">
-          <p>
-            We can also animate the scene by interpolating the deformation latent codes of two input
-            frames. Use the slider here to linearly interpolate between the left frame and the right
-            frame.
+          <h4 class="title is-4">Motion Planners</h4>
+          <p>We use 2 planners to plan the self-driving cars. The first planner is based on Reciprocal Velocity Obstacles (RVO) which optimizes
+            the output action in velocity space for collision avoidance. The second planner is DESPOT which utilizes POMDP for decision making under
+            uncertainty. 
           </p>
-        </div>
-        <div class="columns is-vcentered interpolation-panel">
-          <div class="column is-3 has-text-centered">
-            <img src="./static/images/interpolate_start.jpg"
-                 class="interpolation-image"
-                 alt="Interpolate start reference image."/>
-            <p>Start Frame</p>
-          </div>
-          <div class="column interpolation-video-column">
-            <div id="interpolation-image-wrapper">
-              Loading...
-            </div>
-            <input class="slider is-fullwidth is-large is-info"
-                   id="interpolation-slider"
-                   step="1" min="0" max="100" value="0" type="range">
-          </div>
-          <div class="column is-3 has-text-centered">
-            <img src="./static/images/interpolate_end.jpg"
-                 class="interpolation-image"
-                 alt="Interpolation end reference image."/>
-            <p class="is-bold">End Frame</p>
-          </div>
-        </div>
-        <br/>
+          <img id="planner" height="100%" src="./static/images/planner.png">
 
-        <h3 class="title is-4">Re-rendering the input video</h3>
-        <div class="content has-text-justified">
-          <p>
-            Using <span class="dnerf">Nerfies</span>, you can re-render a video from a novel
-            viewpoint such as a stabilized camera by playing back the training deformations.
+          <h4 class="title is-4">Simulators and Maps</h4>
+          <p>We use SUMMIT as our simulator. We diversify the maps including highways, intersections, roundabouts so we can test the robustness of 
+            each planner in varied environments.
           </p>
-        </div>
-        <div class="content has-text-centered">
-          <video id="replay-video"
-                 controls
-                 muted
-                 preload
-                 playsinline
-                 width="75%">
-            <source src="./static/videos/replay.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
 
+          <h4 class="title is-4">Planning metrics</h4>
+          <p>The driving performance is primarily determined by three factors:
+            safety, comfort and efficiency. We standardize the direction of these metrics, with higher values indicating better performance
+          </p>
+          <img id="driving" height="100%" src="./static/images/driving.png">
+        </div>
       </div>
     </div>
 
+    <div class="columns is-centered">
+      <div class="column">
+        <div class="content">
+          <h3 class="title is-3">Results</h3>
+          <h4 class="title is-4">Limitation Of Current Prediction Evaluation</h4>
+          <p>
+            As seen from below diagram, there exists no correlation between ADE and driving performance for both RVO and DESPOT.
+            Also there is an abnormal positive correlation for DESPOT which lack a realistic basis.
+            This observation affirms the drawback of static evaluation using ADE or FDE.
+          </p>
+          <img id="nocorrelation" height="100%" src="./static/images/nocorrelation.png">
+
+          <h4 class="title is-4">Fixed proposals: Dynamics Gap</h4>
+          <p>
+            We observe that the discrepancy is due to the dynamics gap: in offline evaluation, the vehicle responses are predetermined
+            while in real-world, its behavior is changed according to other vehicles which are influenced by their predictor model.
+            To minimize this gap, we propose the use of an interactive simulation environment to evaluate the predictor for downstream
+            decision-making.
+          </p>
+          <img id="gap" height="100%" src="./static/images/gaps.png">
+
+          <h4 class="title is-4">New Result: Dynamic ADE correleates Driving Performance</h4>
+          <p>
+            As seen from below diagram, the Dynamic ADE now correlates with driving performance: the lower of Dynamic ADE,
+            the higher (better) driving performance.
+          </p>
+          <img id="dynADE" height="100%" src="./static/images/dynamicADE.png">
+        </div>
+      </div>
+    </div>
 
     <div class="columns is-centered">
-      <div class="column is-full-width">
-        <h2 class="title is-3">Related Links</h2>
-
-        <div class="content has-text-justified">
-          <p>
-            There's a lot of excellent work that was introduced around the same time as ours.
-          </p>
-          <p>
-            <a href="https://arxiv.org/abs/2104.09125">Progressive Encoding for Neural Optimization</a> introduces an idea similar to our windowed position encoding for coarse-to-fine optimization.
-          </p>
-          <p>
-            <a href="https://www.albertpumarola.com/research/D-NeRF/index.html">D-NeRF</a> and <a href="https://gvv.mpi-inf.mpg.de/projects/nonrigid_nerf/">NR-NeRF</a>
-            both use deformation fields to model non-rigid scenes.
-          </p>
-          <p>
-            Some works model videos with a NeRF by directly modulating the density, such as <a href="https://video-nerf.github.io/">Video-NeRF</a>, <a href="https://www.cs.cornell.edu/~zl548/NSFF/">NSFF</a>, and <a href="https://neural-3d-video.github.io/">DyNeRF</a>
-          </p>
-          <p>
-            There are probably many more by the time you are reading this. Check out <a href="https://dellaert.github.io/NeRF/">Frank Dellart's survey on recent NeRF papers</a>, and <a href="https://github.com/yenchenlin/awesome-NeRF">Yen-Chen Lin's curated list of NeRF papers</a>.
-          </p>
+      <div class="column">
+        <div class="content">
+          <h3 class="title is-3">Conclusion</h3>
+          We study that the current evaluation of the motion prediction (ADE/FDE) does not indicate the overall performance of the 
+          driving system. We identify the dynamics gaps and inference speed of predictors are 2 primary causes of this discrepancy.
+          We push for the dynamic, closed-loop planning evaluation that results in a more informed performance of the system.
         </div>
       </div>
     </div>
 
   </div>
 </section>
--->
 
 <section class="section" id="BibTeX">
   <div class="container is-max-desktop content">
